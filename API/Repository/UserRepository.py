@@ -1,11 +1,12 @@
 import psycopg2
 import json
+from Utility.Config import dbConfig
 
 
-class UserModel():
+class UserRepository():
     def __init__(self):
-        conn_string = "host='localhost' dbname='Finance' user='postgres' password=12345 port=12345"
-        self.con = psycopg2.connect(conn_string)
+        self.con = psycopg2.connect(host=dbConfig['hostname'], dbname=dbConfig['database'],
+                                    user=dbConfig['username'], password=dbConfig['password'], port=dbConfig['port'])
         self.con.autocommit = True
         self.cursor = self.con.cursor()
 
@@ -15,9 +16,10 @@ class UserModel():
 
     def AddUser(self, userData):
         try:
-            self.cursor.execute('INSERT INTO "Users" ("Name", "MobileNo")'
-                                'VALUES (%s, %s)',
-                                (userData['Name'], userData['MobileNo'])
+            self.cursor.execute('INSERT INTO "Users" ("Name", "MobileNo","Email","Password")'
+                                'VALUES (%s, %s, %s, %s)',
+                                (userData['Name'], userData['MobileNo'],
+                                 userData['Email'], userData['Password'])
                                 )
             self.con.commit()
         except (Exception, psycopg2.Error) as error:
@@ -27,7 +29,7 @@ class UserModel():
             # if self.con:
             #     self.cursor.close()
             #     self.con.close()
-            return "user added"
+            return "Success"
 
     def UpdateUser(self, userData):
         print(userData)
@@ -49,7 +51,18 @@ class UserModel():
             return "user updated"
 
     def DeleteUser(self, Id):
-
         self.cursor.execute('Delete from "Users" where "Id"= {0}'.format(Id))
         self.con.commit()
         return "user deleted"
+
+    def Login(self, loginDetails):
+        self.cursor.execute(f"""SELECT * FROM "Users" WHERE "Email" = %s and "Password"= %s""",
+                            (loginDetails['Email'], loginDetails['Password']))
+        allData = self.cursor.fetchall()
+        if len(allData) == 0:
+            print("no")
+            return "error"
+        else:
+            print("yes")
+            return allData
+        

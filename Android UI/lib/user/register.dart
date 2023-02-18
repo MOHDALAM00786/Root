@@ -1,4 +1,8 @@
+import 'package:android_ui/Services/UserService.dart';
 import 'package:flutter/material.dart';
+import 'package:stylish_dialog/stylish_dialog.dart';
+
+
 
 class Register extends StatefulWidget
 {
@@ -6,8 +10,36 @@ class Register extends StatefulWidget
   @override
   RegisterState createState()=>RegisterState();
 }
+
 class RegisterState extends State<Register> {
   @override
+
+   final Name= TextEditingController();
+  final MobileNo=TextEditingController();
+  final Email= TextEditingController();
+  final Password=TextEditingController();
+
+  saveUser()
+  {
+final service= UserService();
+dynamic userData=
+{
+  "Name":Name.text,
+  "MobileNo":MobileNo.text,
+  "Email":Email.text,
+  "Password":Password.text
+};
+
+service.saveUser(userData).then((response) {
+      StylishDialog(
+        context: context,
+        alertType: StylishDialogType.SUCCESS,
+        titleText: 'Success',
+      );
+}
+).catchError((error) =>
+    print(error));
+  }
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
@@ -34,6 +66,7 @@ class RegisterState extends State<Register> {
                 child: Column(
                   children:[
                     TextField(
+                      controller: Name,
                       decoration: InputDecoration(
                           hintText: 'Name',
                           fillColor: Colors.grey.shade100,
@@ -45,6 +78,7 @@ class RegisterState extends State<Register> {
                       height: 30,
                     ),
                     TextField(
+                      controller: MobileNo,
                       decoration: InputDecoration(
                           hintText: 'Mobile No',
                           fillColor: Colors.grey.shade100,
@@ -56,6 +90,7 @@ class RegisterState extends State<Register> {
                       height: 30,
                     ),
                     TextField(
+                      controller: Email,
                       decoration: InputDecoration(
                           hintText: 'Email',
                           fillColor: Colors.grey.shade100,
@@ -67,6 +102,7 @@ class RegisterState extends State<Register> {
                       height: 30,
                     ),
                     TextField(
+                      controller: Password,
                       obscureText: true,
                       decoration: InputDecoration(
                           hintText: 'Password',
@@ -78,24 +114,15 @@ class RegisterState extends State<Register> {
                     const SizedBox(
                       height: 40,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children:  [Text('Sign Up', style: TextStyle(
-                          color: Color(0xff4c505b),
-                          fontSize: 30,
-                          fontWeight:FontWeight.w700
-                      ),
-                      ),
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Color(0xff4c505b),
-                          child: IconButton(
-                            color: Colors.white,
-                            onPressed: (){},
-                            icon: Icon(Icons.arrow_forward),
-                          ),
+                    Container(
+                        height: 50,
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: ElevatedButton(
+                          child: const Text('Register'),
+                          onPressed: () {
+                            saveUser();
+                          },
                         )
-                      ],
                     ),
                     const SizedBox(
                       height: 40,
