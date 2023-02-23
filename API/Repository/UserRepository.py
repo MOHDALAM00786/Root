@@ -60,9 +60,7 @@ class UserRepository():
                             (loginDetails['Email'], loginDetails['Password']))
         allData = self.cursor.fetchall()
         if len(allData) == 0:
-            print("no")
             return "error"
         else:
-            print("yes")
             return allData
         

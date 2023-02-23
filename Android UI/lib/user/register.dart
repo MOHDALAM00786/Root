@@ -1,6 +1,6 @@
 import 'package:android_ui/Services/UserService.dart';
 import 'package:flutter/material.dart';
-import 'package:stylish_dialog/stylish_dialog.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 
@@ -31,15 +31,29 @@ dynamic userData=
 };
 
 service.saveUser(userData).then((response) {
-      StylishDialog(
-        context: context,
-        alertType: StylishDialogType.SUCCESS,
-        titleText: 'Success',
-      );
+  SetUser(response);
 }
 ).catchError((error) =>
     print(error));
   }
+
+  SetUser(response)
+  {
+    if(response.body=="Success") {
+      Fluttertoast.showToast(
+          msg: "Success",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 17.0
+      );
+    }
+
+
+  }
+
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
@@ -65,7 +79,7 @@ service.saveUser(userData).then((response) {
                 padding: EdgeInsets.only(top:MediaQuery.of(context).size.height * 0.2,right: 35,left: 35),
                 child: Column(
                   children:[
-                    TextField(
+                    TextFormField(
                       controller: Name,
                       decoration: InputDecoration(
                           hintText: 'Name',

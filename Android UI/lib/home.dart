@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:android_ui/Services/HomeService.dart';
-import 'package:dropdown_search/dropdown_search.dart';
-import 'package:flutter/material.dart';
-
+import 'package:search_choices/search_choices.dart';
 
 class Home extends StatefulWidget
 {
@@ -19,6 +17,13 @@ getAllCompanies()
 }
 class HomeState extends State<Home>
 {
+  dynamic selectedValue = TextEditingController();
+  List<DropdownMenuItem<String>> menuItems = [
+    DropdownMenuItem(child: Text("USA"),value: "USA"),
+    DropdownMenuItem(child: Text("Canada"),value: "Canada"),
+    DropdownMenuItem(child: Text("Brazil"),value: "Brazil"),
+    DropdownMenuItem(child: Text("England"),value: "England"),
+  ];
   @override
   void initState() {
     super.initState();
@@ -73,13 +78,19 @@ class HomeState extends State<Home>
                     SizedBox(
                       height: 30,
                     ),
-                    TextField(
-                      decoration: InputDecoration(
-                          hintText: 'Search your company',
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10))),
+                    SearchChoices.single(
+                      items: menuItems,
+                      value: selectedValue,
+                      hint: "Select one",
+                      searchHint: null,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedValue = value;
+                        });
+                      },
+                      dialogBox: false,
+                      isExpanded: true,
+                      menuConstraints: BoxConstraints.tight(Size.fromHeight(350)),
                     ),
                     SizedBox(
                       height: 30,
@@ -102,3 +113,5 @@ class HomeState extends State<Home>
     );
   }
 }
+
+
