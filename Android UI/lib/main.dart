@@ -10,7 +10,7 @@ void main() {
     debugShowCheckedModeBanner: false,
     initialRoute: 'home',
     routes: {'login':(context)=> Login(),
-      'register':(context)=>const Register(),
+      'register':(context)=> Register(),
       'home':(context)=>const Home()
     },
   ));

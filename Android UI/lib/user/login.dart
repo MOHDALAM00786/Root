@@ -46,13 +46,20 @@ class LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Login Page'),
         centerTitle: true,
+        automaticallyImplyLeading: false,
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.home), onPressed: () {
+            Navigator.pushNamed(context, 'home');
+          }),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 60),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 60,),
           child: Form(
             key: formField,
             child: Column(
@@ -103,8 +110,8 @@ class LoginState extends State<Login> {
                   validator: (value) {
                     if (value!.isEmpty) {
                       return "Enter password";
-                    } else if (passwordController.text.length < 8) {
-                      return "Password length should not be less than 8 characters";
+                    } else if (passwordController.text.length < 6) {
+                      return "Password length should not be less than 6 characters";
                     }
                   },
                 ),
@@ -140,12 +147,14 @@ class LoginState extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Already have an account?",
+                      "Create a new account?",
                       style:
                           TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                     ),
                     TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, 'register');
+                        },
                         child: Text(
                           "Sign up",
                           style: TextStyle(

@@ -2,44 +2,35 @@ import 'package:android_ui/Services/UserService.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-
-
-class Register extends StatefulWidget
-{
-  const Register ({Key? key}) : super(key:key);
+class Register extends StatefulWidget {
   @override
-  RegisterState createState()=>RegisterState();
+  State<Register> createState() => RegisterState();
 }
 
 class RegisterState extends State<Register> {
-  @override
+  final GlobalKey<FormState> formField = GlobalKey<FormState>();
+  final usernameController = TextEditingController();
+  final mobileController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  bool passToggle = true;
 
-   final Name= TextEditingController();
-  final MobileNo=TextEditingController();
-  final Email= TextEditingController();
-  final Password=TextEditingController();
+  saveUser() {
+    final service = UserService();
+    dynamic userData = {
+      "Name": usernameController.text,
+      "MobileNo": mobileController.text,
+      "Email": emailController.text,
+      "Password": passwordController.text
+    };
 
-  saveUser()
-  {
-final service= UserService();
-dynamic userData=
-{
-  "Name":Name.text,
-  "MobileNo":MobileNo.text,
-  "Email":Email.text,
-  "Password":Password.text
-};
-
-service.saveUser(userData).then((response) {
-  SetUser(response);
-}
-).catchError((error) =>
-    print(error));
+    service.saveUser(userData).then((response) {
+      SetUser(response);
+    }).catchError((error) => print(error));
   }
 
-  SetUser(response)
-  {
-    if(response.body=="Success") {
+  SetUser(response) {
+    if (response.body == "Success") {
       Fluttertoast.showToast(
           msg: "Success",
           toastLength: Toast.LENGTH_LONG,
@@ -47,119 +38,166 @@ service.saveUser(userData).then((response) {
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,
-          fontSize: 17.0
-      );
+          fontSize: 17.0);
     }
-
-
   }
 
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage('assets/images/register.png'),fit:BoxFit.cover)),
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-        backgroundColor: Colors.transparent,
-        body:Stack(
-          children: [
-            Container(
-              padding: const EdgeInsets.only(left: 35,top: 50),
-              child:  const Text(
-                'Create Account',
-                style: TextStyle(color: Colors.white,fontSize: 33),
-              ),
-            ),
-            SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.only(top:MediaQuery.of(context).size.height * 0.2,right: 35,left: 35),
-                child: Column(
-                  children:[
-                    TextFormField(
-                      controller: Name,
-                      decoration: InputDecoration(
-                          hintText: 'Name',
-                          fillColor: Colors.grey.shade100,
-                          filled: true,
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10))),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    TextField(
-                      controller: MobileNo,
-                      decoration: InputDecoration(
-                          hintText: 'Mobile No',
-                          fillColor: Colors.grey.shade100,
-                          filled: true,
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10))),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    TextField(
-                      controller: Email,
-                      decoration: InputDecoration(
-                          hintText: 'Email',
-                          fillColor: Colors.grey.shade100,
-                          filled: true,
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10))),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    TextField(
-                      controller: Password,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                          hintText: 'Password',
-                          fillColor: Colors.grey.shade100,
-                          filled: true,
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10))),
-                    ),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    Container(
-                        height: 50,
-                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        child: ElevatedButton(
-                          child: const Text('Register'),
-                          onPressed: () {
-                            saveUser();
-                          },
-                        )
-                    ),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(onPressed:() {
-                          Navigator.pushNamed(context, 'login');
-                        }, child: Text('Sign In',style: TextStyle(
-                            decoration: TextDecoration.underline,
-                            fontSize: 20,
-                            color: Color(0xff4c505b)
-                        ),)
-                        ),
-
-                      ],
-                    )
-                  ],
+    return Scaffold(
+      //backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text('Resister Page'),
+       centerTitle: true,
+        automaticallyImplyLeading: false,
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.home), onPressed: () {
+            Navigator.pushNamed(context, 'home');
+          }),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 60,
+          ),
+          child: Form(
+            key: formField,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: usernameController,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    labelText: "Username",
+                    border: OutlineInputBorder(),
+                    //prefixIcon: Icon(Icons.user)
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Enter Username";
+                    }
+                  },
                 ),
-              ),
-            )
-          ],
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: mobileController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: "Mobile No",
+                    border: OutlineInputBorder(),
+                    //prefixIcon: Icon(Icons.user)
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Enter Mobile No";
+                    } else if (mobileController.text.length < 10) {
+                      return "Mobile no. length should not be less than 10 digits";
+                    }
+                  },
+                ),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                      labelText: "Email",
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.email)),
+                  validator: (value) {
+                    bool emailValid = RegExp(
+                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9-]+\.[a-zA-Z]+")
+                        .hasMatch(value!);
+                    if (value!.isEmpty) {
+                      return "Enter Email";
+                    } else if (!emailValid) {
+                      return "Enter Valid Email";
+                    }
+                  },
+                ),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: passwordController,
+                  obscureText: passToggle,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                      labelText: "Password",
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.lock),
+                      suffixIcon: InkWell(
+                        onTap: () {
+                          setState(() {
+                            passToggle = !passToggle;
+                          });
+                        },
+                        child: Icon(passToggle
+                            ? Icons.visibility
+                            : Icons.visibility_off),
+                      )),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Enter password";
+                    } else if (passwordController.text.length < 6) {
+                      return "Password length should not be less than 6 characters";
+                    }
+                  },
+                ),
+                SizedBox(height: 60),
+                InkWell(
+                  onTap: () {
+                    if (formField.currentState!.validate()) {
+                      // call api service here
+                      saveUser();
+                      usernameController.clear();
+                      mobileController.clear();
+                      emailController.clear();
+                      passwordController.clear();
+                    }
+                  },
+                  child: Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                        color: Colors.indigo,
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Center(
+                      child: Text(
+                        "Sign Up",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Already have an account?",
+                      style:
+                          TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, 'login');
+                        },
+                        child: Text(
+                          "Sign In",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ))
+                  ],
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );
